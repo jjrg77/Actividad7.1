@@ -7,12 +7,23 @@ let resultado = document.getElementById('result');
 let opeActual = '';
 let opeAnterior = '';
 let operacion = undefined;
+let finishOperation = false;
 
 //eventos
 botonNumeros.forEach(function (boton) {
-    boton.addEventListener('click', function () {
-        agregarNumero(boton.innerText);
-    })
+        boton.addEventListener('click', function () {
+            if (!finishOperation){
+                agregarNumero(boton.innerText);
+                return;
+            }
+            else{
+                finishOperation = false;
+                clear();
+                actualizarDisplay();
+                agregarNumero(boton.innerText);
+            }
+
+        });
 });
 
 botonOperac.forEach(function (boton) {
@@ -25,6 +36,7 @@ botonOperac.forEach(function (boton) {
 botonIgual.addEventListener('click', function () {
     calcular();
     actualizarDisplay();
+    finishOperation = true;
 });
 
 botonBorrar.addEventListener('click', function () {
@@ -40,12 +52,13 @@ const clear = () => {
 }
 
 const agregarNumero = (num) => {
+    if (opeAnterior != '') clear;
     opeActual = opeActual.toString() + num.toString();
     actualizarDisplay();
 }
 
 const selectOperacion = (op) => {
-    if (opeActual === '') return;
+    // if (opeActual === '') return;
     if (opeAnterior !== '') {
         calcular();
     }
@@ -63,6 +76,8 @@ const calcular = () => {
     let anterior = parseFloat(opeAnterior);
     let actual = parseFloat(opeActual);
 
+
+
     if (isNaN(anterior) || isNaN(actual)) return;
 
     switch (operacion) {
@@ -75,6 +90,7 @@ const calcular = () => {
         case '/':
             if (actual === 0 || actual === ' ') {
                 alert('no se puede dividir por cero');
+                return;
             }
             else {
                 calculo = anterior / actual;
@@ -87,3 +103,7 @@ const calcular = () => {
     operacion = undefined;
     opeAnterior = '';
 }
+
+
+
+
